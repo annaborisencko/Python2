@@ -8,7 +8,7 @@ with open("phonebook_raw.csv", encoding="utf-8") as f:
 
 # TODO 1: выполните пункты 1-3 ДЗ
 import re
-contact = {}
+# Приводим первые три поля к виду Фамилия, Имя, Отчество
 for item in contacts_list[1:]:
   fio = " ".join(item[:2])
   # print(fio)
@@ -17,7 +17,8 @@ for item in contacts_list[1:]:
   item[0] = result.group(1)
   item[1] = result.group(2)
   item[2] = result.group(3)
-# print(contacts_list)
+
+# Объединяем информацию о дублях и исключаем дубли из общего списка
 contacts_list_copy = []
 double_index = []
 for index, contact in enumerate(contacts_list):
@@ -35,14 +36,14 @@ for index, contact in enumerate(contacts_list):
   if index not in double_index:
     contacts_list_copy.append(contact)
 
-# print(contacts_list_copy)
+# Приводим телефоны в адресной книге к формату +7(999)999-99-99
 phone_pattern = r"(\+7|8)?\s*\(?(\d{3})\)?-?\s*(\d{3})[\s-]*(\d{2})[\s-]*(\d{2})\s*\(?(доб.\s*\d+)?\)?"
 re_phone = r"+7(\2)\3-\4-\5 \6"
 for contact in contacts_list_copy:
   # phone = re.findall(phone_pattern,contact[-2])
   phone = re.sub(phone_pattern, re_phone, contact[-2])
   contact[-2] = phone
-print(contacts_list_copy)
+
 # TODO 2: сохраните получившиеся данные в другой файл
 # код для записи файла в формате CSV
 with open("phonebook.csv", "w", encoding="utf-8") as f:
