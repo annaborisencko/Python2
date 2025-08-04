@@ -64,39 +64,39 @@ def find_word_in_preview(articles_list):
                     print(f"Статья \"{article_info['title']}\" уже добавлена с список")
     return match_articles_list
 
-match_articles = find_word_in_preview(articles_list)            
+# Ищем подходящие статьи по вхождению слов из KEYWORDS в полном тексте статей
+def find_word_in_fulltext(articles_list):
+    article_link_list = []
+    for article in articles_list:
+        link = wait_element(browser=article, by=By.CSS_SELECTOR, value='a.tm-title__link').get_attribute('href')
+        article_link_list.append(link)
+
+    match_article_list = []
+    match_article_link = []
+    for article_link in article_link_list:
+        browser.get(article_link)
+        text = wait_element(browser, by=By.TAG_NAME, value='article').text.lower().strip()
+        for word in KEYWORDS:
+            article_info = {}
+            # Ищем только слова из KEYWORDS и их формы, исключаем слово дизайнер 
+            pattern = r"\b" + word + r"(?!ер)\w*\b"
+            result = re.findall(pattern, text)
+            if len(result) != 0:
+                article_info['date'] = wait_element(browser, by=By.TAG_NAME, value='time').get_attribute('datetime')
+                article_info['title'] = wait_element(browser, by=By.TAG_NAME, value='h1').text
+                article_info['link'] = article_link    
+
+                if not article_link in match_article_link:
+                    match_article_link.append(article_link)
+                    match_article_list.append(article_info)
+
+    return match_article_list
+
+# match_articles = find_word_in_preview(articles_list)            
+# for article in match_articles:
+#     print(f"{article['date']} - {article['title']} - {article['link']}")
+
+match_articles = find_word_in_fulltext(articles_list)            
 for article in match_articles:
     print(f"{article['date']} - {article['title']} - {article['link']}")
-
-    
-# Ищем подходящие статьи по вхождению слов из KEYWORDS в полном тексте статей
-# article_link_list = []
-# for article in articles_list:
-#     link = wait_element(browser=article, by=By.CSS_SELECTOR, value='a.tm-title__link').get_attribute('href')
-#     article_link_list.append(link)
-
-# match_article_list_full = []
-# match_article_list_link_full = []
-# for article_link in article_link_list:
-#     browser.get(article_link)
-#     article_full_text = wait_element(browser, by=By.TAG_NAME, value='article').text.lower().strip()
-#     for word in KEYWORDS:
-#         # Ищем только слова из KEYWORDS и их формы, исключаем слово дизайнер 
-#         pattern = r"\b" + word + r"(?!ер)\w*\b"
-#         result = re.findall(pattern, article_full_text)
-#         if result:
-#             article_date = wait_element(browser, by=By.TAG_NAME, value='time').get_attribute('datetime')
-#             article_title = wait_element(browser, by=By.TAG_NAME, value='h1').text
-#             match_article_list_link_full.append(article_link)
-
-#             if not article_link in match_article_list_link_full:
-#                 article_info = {
-#                     'date': article_date,
-#                     'title': article_title,
-#                     'link': article_link
-#                 }
-#                 match_article_list_full.append(article_info)
-
-# for article in match_article_list_full:
-#     print(f"{article['title']}")
 
