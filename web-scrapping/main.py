@@ -67,6 +67,8 @@ def find_word_in_preview(articles_list):
 match_articles = find_word_in_preview(articles_list)            
 for article in match_articles:
     print(f"{article['date']} - {article['title']} - {article['link']}")
+
+    
 # Ищем подходящие статьи по вхождению слов из KEYWORDS в полном тексте статей
 # article_link_list = []
 # for article in articles_list:
