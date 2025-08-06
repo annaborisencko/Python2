@@ -14,10 +14,10 @@ class FlatIterator:
         return self
 
     def __next__(self):
-        if self.item_cursor >= len(self.list_of_list[self.list_cursor]):
+        if self.item_cursor == len(self.list_of_list[self.list_cursor]):
             self.item_cursor = 0
             self.list_cursor += 1
-        if self.list_cursor >= len(self.list_of_list):
+        if self.list_cursor == len(self.list_of_list):
             raise StopIteration
         item = self.list_of_list[self.list_cursor][self.item_cursor]
         self.item_cursor += 1
